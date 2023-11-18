@@ -1,0 +1,15 @@
+syntax="proto3";
+package mock_proto;
+
+message Post {
+    uint32 userId = 1;
+    uint32 id = 2;
+    string title = 3;
+    bool completed = 4;
+    Category category = 5;
+}
+
+message Category {
+    uint32 id = 1;
+    string name = 2;
+}

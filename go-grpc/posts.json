@@ -1,0 +1,32 @@
+[
+  {
+    "userId": 1,
+    "id": 1,
+    "title": "delectus aut autem",
+    "completed": false,
+    "category": {
+      "id": 1,
+      "name": "morfinder"
+    }
+  },
+  {
+    "userId": 2,
+    "id": 2,
+    "title": "wilectus aut autem",
+    "completed": false,
+    "category": {
+      "id": 2,
+      "name": "ione"
+    }
+  },
+  {
+    "userId": 3,
+    "id": 3,
+    "title": "nemente autem",
+    "completed": false,
+    "category": {
+      "id": 3,
+      "name": "fortest"
+    }
+  }
+]
