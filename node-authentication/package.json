@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "prisma:migrate": "pnpm exec prisma migrate dev"
+    "prisma:migrate": "pnpm exec prisma migrate dev",
+    "prisma:seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "project-aadr-be-node-authentication",

@@ -8,11 +8,32 @@ generator client {
 }
 
 model User {
-    id       String @id @default(uuid())
+    id       String    @id @default(uuid())
     name     String
-    username String @unique
-    email    String @unique
+    username String    @unique
+    email    String    @unique
     avatar   String
+    diamonds Diamond[]
 
     @@map("users")
+}
+
+model DiamondCategory {
+    id      String    @id @default(uuid())
+    name    String    @unique
+    price   Int
+    amount  Int
+    Diamond Diamond[]
+
+    @@map("diamond_categories")
+}
+
+model Diamond {
+    id                String          @id @default(uuid())
+    userId            String?
+    user              User?           @relation(fields: [userId], references: [id])
+    diamondCategory   DiamondCategory @relation(fields: [diamondCategoryId], references: [id])
+    diamondCategoryId String
+
+    @@map("diamonds")
 }

@@ -9,7 +9,7 @@ app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/', routers.authRoute);
+app.use('/', routers.authRoute, routers.diamondRoute);
 
 app.listen(NODE_PORT || 5000, () => {
   console.log(`Authentication server running on port ${NODE_PORT}`);

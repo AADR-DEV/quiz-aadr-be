@@ -40,11 +40,10 @@ export const authUserController = async (
   next: NextFunction,
 ) => {
   try {
-    const data = req.params.username;
+    const data = req.params.email;
 
-    const { id, name, username, email, avatar } = await authUserService(
-      data as string,
-    );
+    const { id, name, username, email, avatar, diamonds } =
+      await authUserService(data as string);
 
     res.status(200).json({
       id,
@@ -52,6 +51,7 @@ export const authUserController = async (
       username,
       email,
       avatar,
+      diamonds,
       message: 'User successfully authenticated',
     });
   } catch (error) {
