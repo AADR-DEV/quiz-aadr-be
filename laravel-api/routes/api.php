@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuetionController;
 
-Route::get('/quetions', [QuetionController::class, 'getAll']);
-Route::get('/quetion/{id}', [QuetionController::class, 'getOne']);
-Route::post('/quetion', [QuetionController::class, 'create']);
-Route::patch('/quetion/{id}', [QuetionController::class, 'update']);
-Route::delete('/quetion/{id}', [QuetionController::class, 'delete']);
+Route::get('/questions', [QuetionController::class, 'getAll']);
+Route::get('/question/{id}', [QuetionController::class, 'getOne']);
+Route::post('/question', [QuetionController::class, 'create']);
+// Route::patch('/quetion/{id}', [QuetionController::class, 'update']);
+Route::delete('/question/{id}', [QuetionController::class, 'delete']);
