@@ -45,6 +45,22 @@ export const authUserController = async (
     const { id, name, username, email, avatar, diamonds } =
       await authUserService(data as string);
 
+    const getAmountFromEveryPurchase = diamonds.map(
+      diamond => diamond.diamond_category.amount,
+    );
+
+    const getPriceFromEveryPurchase = diamonds.map(
+      diamond => diamond.diamond_category.price,
+    );
+
+    const totalDiamondAmount = getAmountFromEveryPurchase.reduce(
+      (acc, curr) => acc + curr,
+    );
+
+    const totalSpent = getPriceFromEveryPurchase.reduce(
+      (acc, curr) => acc + curr,
+    );
+
     res.status(200).json({
       id,
       name,
@@ -52,6 +68,8 @@ export const authUserController = async (
       email,
       avatar,
       diamonds,
+      totalDiamondAmount,
+      totalSpent,
       message: 'User successfully authenticated',
     });
   } catch (error) {
