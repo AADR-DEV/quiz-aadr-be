@@ -45,21 +45,24 @@ export const authUserController = async (
     const { id, name, username, email, avatar, diamonds } =
       await authUserService(data as string);
 
-    const getAmountFromEveryPurchase = diamonds.map(
-      diamond => diamond.diamond_category.amount,
-    );
+    let total_diamonds: number = 0;
+    let total_spent: number = 0;
 
-    const getPriceFromEveryPurchase = diamonds.map(
-      diamond => diamond.diamond_category.price,
-    );
+    if (diamonds.length > 0) {
+      const getAmountFromEveryPurchase = diamonds.map(
+        diamond => diamond.diamondCategory.amount,
+      );
 
-    const totalDiamondAmount = getAmountFromEveryPurchase.reduce(
-      (acc, curr) => acc + curr,
-    );
+      const getPriceFromEveryPurchase = diamonds.map(
+        diamond => diamond.diamondCategory.price,
+      );
 
-    const totalSpent = getPriceFromEveryPurchase.reduce(
-      (acc, curr) => acc + curr,
-    );
+      total_diamonds = getAmountFromEveryPurchase.reduce(
+        (acc, curr) => acc + curr,
+      );
+
+      total_spent = getPriceFromEveryPurchase.reduce((acc, curr) => acc + curr);
+    }
 
     res.status(200).json({
       id,
@@ -68,8 +71,8 @@ export const authUserController = async (
       email,
       avatar,
       diamonds,
-      totalDiamondAmount,
-      totalSpent,
+      total_diamonds,
+      total_spent,
       message: 'User successfully authenticated',
     });
   } catch (error) {

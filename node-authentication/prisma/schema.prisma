@@ -34,6 +34,7 @@ model Diamond {
     user              User?           @relation(fields: [userId], references: [id])
     diamondCategory   DiamondCategory @relation(fields: [diamondCategoryId], references: [id])
     diamondCategoryId String
+    createdAt         DateTime        @default(now()) @map("created_at")
 
     @@map("diamonds")
 }

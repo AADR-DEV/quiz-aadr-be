@@ -13,23 +13,25 @@ export const diamondPurchaseService = async (payload: PurcahsePayload) => {
       user: {
         include: {
           diamonds: {
-            where: {
-              diamondCategoryId,
+            select: {
+              id: true,
+              createdAt: true,
+              diamondCategory: true,
             },
-            include: {
-              diamond_category: {
-                select: {
-                  id: true,
-                  name: true,
-                  price: true,
-                },
-              },
+            orderBy: {
+              createdAt: 'desc',
             },
           },
         },
       },
     },
   });
+
+  return result;
+};
+
+export const diamondCategoryService = async () => {
+  const result = await prisma.diamondCategory.findMany();
 
   return result;
 };

@@ -27,21 +27,20 @@ export const authSessionService = async (payload: OAuthPayload) => {
 };
 
 export const authUserService = async (payload: string) => {
-  const result = await prisma.user.findFirst({
+  const result = await prisma.user.findUnique({
     where: {
       email: payload,
     },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      avatar: true,
       diamonds: {
-        include: {
-          diamond_category: {
-            select: {
-              id: true,
-              name: true,
-              amount: true,
-              price: true,
-            },
-          },
+        select: {
+          id: true,
+          diamondCategory: true,
         },
       },
     },

@@ -24,6 +24,7 @@ CREATE TABLE "diamonds" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
     "diamondCategoryId" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "diamonds_pkey" PRIMARY KEY ("id")
 );

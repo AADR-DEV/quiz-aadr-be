@@ -9,7 +9,7 @@ import {
 const router = Router();
 
 router.post('/auth/store', authSessionController);
-router.get('/auth/user/:username', authUserController);
+router.get('/auth/user/:email', authUserController);
 router.patch('/auth/user/:email', authUserUpdateController);
 
 export default router;
