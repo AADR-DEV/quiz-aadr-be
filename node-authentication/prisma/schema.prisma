@@ -8,13 +8,13 @@ generator client {
 }
 
 model User {
-    id                String    @id @default(uuid())
-    name              String
-    username          String    @unique
-    email             String    @unique
-    avatar            String
-    diamonds          Diamond[]
-    avatarCollections Avatar[]
+    id         String    @id @default(uuid())
+    name       String
+    username   String    @unique
+    email      String    @unique
+    mainAvatar String?   @map("main_avatar")
+    diamonds   Diamond[]
+    avatars    Avatar[]
 
     @@map("users")
 }
@@ -31,7 +31,10 @@ model DiamondCategory {
 
 model AvatarCategory {
     id     String   @id @default(uuid())
-    image  String
+    name   String   @unique
+    price  Int
+    url    String
+    type   String
     Avatar Avatar[]
 
     @@map("avatar_categories")
@@ -53,7 +56,7 @@ model Avatar {
     userId           String?
     user             User?          @relation(fields: [userId], references: [id])
     avatarCategory   AvatarCategory @relation(fields: [avatarCategoryId], references: [id])
-    avatarCategoryId String
+    avatarCategoryId String         @unique
     createdAt        DateTime       @default(now()) @map("created_at")
 
     @@map("avatars")

@@ -4,7 +4,7 @@ import {
   authSessionService,
   authUserService,
   authUserUpdateService,
-} from '../services/index.service';
+} from '../services';
 import { OAuthPayload } from '../types';
 
 export const authSessionController = async (
@@ -15,7 +15,7 @@ export const authSessionController = async (
   try {
     const data: OAuthPayload = req.body;
 
-    const { id, name, username, email, avatar } = await authSessionService(
+    const { id, name, username, email, mainAvatar } = await authSessionService(
       data as OAuthPayload,
     );
 
@@ -25,7 +25,7 @@ export const authSessionController = async (
         name,
         username,
         email,
-        avatar,
+        mainAvatar,
       },
       message: 'Create user data successful',
     });
@@ -42,7 +42,7 @@ export const authUserController = async (
   try {
     const data = req.params.email;
 
-    const { id, name, username, email, avatar, diamonds } =
+    const { id, name, username, email, mainAvatar, diamonds, avatars } =
       await authUserService(data as string);
 
     let total_diamonds: number = 0;
@@ -69,7 +69,8 @@ export const authUserController = async (
       name,
       username,
       email,
-      avatar,
+      mainAvatar,
+      avatars,
       diamonds,
       total_diamonds,
       total_spent,

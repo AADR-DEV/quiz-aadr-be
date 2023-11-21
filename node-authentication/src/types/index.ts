@@ -3,10 +3,16 @@ export type OAuthPayload = {
   name: string;
   username: string;
   email: string;
-  avatar: string;
+  mainAvatar?: string;
+  avatars: AvatarCollectionPayload;
 };
 
-export type PurcahsePayload = {
+export type DiamondPurcahsePayload = {
   userId: string;
   diamondCategoryId: string;
+};
+
+export type AvatarCollectionPayload = {
+  userId: string;
+  avatarCategoryId: string;
 };

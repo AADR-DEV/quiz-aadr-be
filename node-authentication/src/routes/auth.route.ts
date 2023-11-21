@@ -4,7 +4,7 @@ import {
   authUserController,
   authSessionController,
   authUserUpdateController,
-} from '../controllers/index.controller';
+} from '../controllers';
 
 const router = Router();
 

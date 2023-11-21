@@ -1,7 +1,9 @@
 import { prisma } from '../lib/prisma';
-import { PurcahsePayload } from '../types';
+import type { DiamondPurcahsePayload } from '../types';
 
-export const diamondPurchaseService = async (payload: PurcahsePayload) => {
+export const diamondPurchaseService = async (
+  payload: DiamondPurcahsePayload,
+) => {
   const { userId, diamondCategoryId } = payload;
 
   const result = await prisma.diamond.create({
@@ -31,7 +33,11 @@ export const diamondPurchaseService = async (payload: PurcahsePayload) => {
 };
 
 export const diamondCategoryService = async () => {
-  const result = await prisma.diamondCategory.findMany();
+  const result = await prisma.diamondCategory.findMany({
+    orderBy: {
+      price: 'desc',
+    },
+  });
 
   return result;
 };

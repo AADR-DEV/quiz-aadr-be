@@ -1,9 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
-import { PurcahsePayload } from '../types';
-import {
-  diamondCategoryService,
-  diamondPurchaseService,
-} from '../services/diamond.service';
+import type { DiamondPurcahsePayload } from '../types';
+import { diamondCategoryService, diamondPurchaseService } from '../services';
 
 export const diamondPurchaseController = async (
   req: Request,
@@ -11,9 +8,11 @@ export const diamondPurchaseController = async (
   next: NextFunction,
 ) => {
   try {
-    const data: PurcahsePayload = req.body;
+    const data: DiamondPurcahsePayload = req.body;
 
-    const { user } = await diamondPurchaseService(data as PurcahsePayload);
+    const { user } = await diamondPurchaseService(
+      data as DiamondPurcahsePayload,
+    );
 
     const { id, createdAt, diamondCategory } = user.diamonds[0];
 

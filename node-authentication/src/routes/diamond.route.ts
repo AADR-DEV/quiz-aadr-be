@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   diamondCategoryController,
   diamondPurchaseController,
-} from '../controllers/index.controller';
+} from '../controllers';
 
 const router = Router();
 

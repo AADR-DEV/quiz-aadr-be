@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma';
 import type { OAuthPayload } from '../types';
 
 export const authSessionService = async (payload: OAuthPayload) => {
-  const { name, username, email, avatar } = payload;
+  const { name, username, email, mainAvatar } = payload;
 
   let result = await prisma.user.findUnique({
     where: {
@@ -18,7 +18,7 @@ export const authSessionService = async (payload: OAuthPayload) => {
         name,
         username,
         email,
-        avatar,
+        mainAvatar,
       },
     });
   }
@@ -36,7 +36,13 @@ export const authUserService = async (payload: string) => {
       name: true,
       username: true,
       email: true,
-      avatar: true,
+      mainAvatar: true,
+      avatars: {
+        select: {
+          id: true,
+          avatarCategory: true,
+        },
+      },
       diamonds: {
         select: {
           id: true,
@@ -52,7 +58,7 @@ export const authUserService = async (payload: string) => {
 };
 
 export const authUserUpdateService = async (
-  payload: Partial<Pick<OAuthPayload, 'username' | 'avatar'>>,
+  payload: Partial<Pick<OAuthPayload, 'username' | 'mainAvatar'>>,
   params: string,
 ) => {
   const toUpdate = await prisma.user.findUnique({
@@ -67,7 +73,7 @@ export const authUserUpdateService = async (
     where: { email: params },
     data: {
       username: payload.username,
-      avatar: payload.avatar,
+      mainAvatar: payload.mainAvatar,
     },
   });
 
