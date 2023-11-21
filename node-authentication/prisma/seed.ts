@@ -3,11 +3,11 @@ import { prisma } from '../src/lib/prisma';
 async function main() {
   const starterPack = await prisma.diamondCategory.upsert({
     where: {
-      name: 'Starter Pack',
+      name: 'starter_pack',
     },
     update: {},
     create: {
-      name: 'Starter Pack',
+      name: 'starter_pack',
       amount: 100,
       price: 10000,
     },
@@ -15,11 +15,11 @@ async function main() {
 
   const elitePack = await prisma.diamondCategory.upsert({
     where: {
-      name: 'Elite Pack',
+      name: 'elite_pack',
     },
     update: {},
     create: {
-      name: 'Elite Pack',
+      name: 'elite_pack',
       amount: 200,
       price: 20000,
     },
@@ -27,11 +27,11 @@ async function main() {
 
   const royalPack = await prisma.diamondCategory.upsert({
     where: {
-      name: 'Royal Pack',
+      name: 'royal_pack',
     },
     update: {},
     create: {
-      name: 'Royal Pack',
+      name: 'royal_pack',
       amount: 300,
       price: 30000,
     },
@@ -39,11 +39,11 @@ async function main() {
 
   const mysticPack = await prisma.diamondCategory.upsert({
     where: {
-      name: 'Mystic Pack',
+      name: 'mystic_pack',
     },
     update: {},
     create: {
-      name: 'Mystic Pack',
+      name: 'mystic_pack',
       amount: 500,
       price: 50000,
     },
@@ -51,11 +51,11 @@ async function main() {
 
   const rarePack = await prisma.diamondCategory.upsert({
     where: {
-      name: 'Rare Pack',
+      name: 'rare_pack',
     },
     update: {},
     create: {
-      name: 'Rare Pack',
+      name: 'rare_pack',
       amount: 1000,
       price: 100000,
     },
@@ -63,11 +63,11 @@ async function main() {
 
   const ultraRarePack = await prisma.diamondCategory.upsert({
     where: {
-      name: 'Ultra Rare Pack',
+      name: 'ultra_rare_pack',
     },
     update: {},
     create: {
-      name: 'Ultra Rare Pack',
+      name: 'ultra_rare_pack',
       amount: 1500,
       price: 150000,
     },

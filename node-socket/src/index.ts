@@ -7,13 +7,19 @@ const ADMIN = 'Admin';
 const app = express();
 
 const expressServer = app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
+  console.log(`Socket server running on port ${PORT}`);
 });
+
+type UserAnswer = {
+  questionId: string;
+  questionAnswer: string;
+};
 
 type User = {
   id: string;
   name: string;
   room: string;
+  answers?: UserAnswer[];
 };
 
 type UsersState = {
@@ -130,6 +136,9 @@ io.on('connection', socket => {
   // Listening for a message event
   socket.on('message', ({ name, text }) => {
     const room = getUser(socket.id)?.room;
+
+    console.log(text);
+
     if (room) {
       io.to(room).emit('message', buildMsg(name, text));
     }
@@ -140,6 +149,17 @@ io.on('connection', socket => {
     const room = getUser(socket.id)?.room;
     if (room) {
       socket.broadcast.to(room).emit('activity', name);
+    }
+  });
+
+  // Listen for game
+  socket.on('startGame', () => {
+    const room = getUser(socket.id)?.room;
+
+    console.log(room);
+
+    if (room) {
+      io.to(room).emit('message', buildMsg(ADMIN, `Let's get started!`));
     }
   });
 });
