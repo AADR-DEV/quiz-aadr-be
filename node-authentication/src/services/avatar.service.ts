@@ -1,3 +1,4 @@
+import HttpException from '../exceptions/httpException';
 import { prisma } from '../lib/prisma';
 import type { AvatarCollectionPayload } from '../types';
 
@@ -5,6 +6,17 @@ export const avatarCollectionService = async (
   payload: AvatarCollectionPayload,
 ) => {
   const { userId, avatarCategoryId } = payload;
+
+  const checkIfExist = await prisma.avatar.findFirst({
+    where: {
+      userId,
+      avatarCategoryId,
+    },
+  });
+
+  if (checkIfExist) {
+    throw new HttpException(400, 'Already collected');
+  }
 
   const result = await prisma.avatar.create({
     data: {
