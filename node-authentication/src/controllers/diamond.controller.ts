@@ -17,11 +17,9 @@ export const diamondPurchaseController = async (
     const { id, createdAt, diamondCategory } = user.diamonds[0];
 
     res.status(201).json({
-      data: {
-        id,
-        createdAt,
-        diamondCategory,
-      },
+      id,
+      createdAt,
+      diamondCategory,
       message: 'Diamond successfully purchased',
     });
   } catch (error) {

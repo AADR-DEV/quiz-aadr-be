@@ -20,13 +20,11 @@ export const authSessionController = async (
     );
 
     res.status(201).json({
-      data: {
-        id,
-        name,
-        username,
-        email,
-        mainAvatar,
-      },
+      id,
+      name,
+      username,
+      email,
+      mainAvatar,
       message: 'Create user data successful',
     });
   } catch (error) {
