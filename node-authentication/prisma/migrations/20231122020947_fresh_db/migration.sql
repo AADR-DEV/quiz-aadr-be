@@ -62,9 +62,6 @@ CREATE UNIQUE INDEX "diamond_categories_name_key" ON "diamond_categories"("name"
 -- CreateIndex
 CREATE UNIQUE INDEX "avatar_categories_name_key" ON "avatar_categories"("name");
 
--- CreateIndex
-CREATE UNIQUE INDEX "avatars_avatarCategoryId_key" ON "avatars"("avatarCategoryId");
-
 -- AddForeignKey
 ALTER TABLE "diamonds" ADD CONSTRAINT "diamonds_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 

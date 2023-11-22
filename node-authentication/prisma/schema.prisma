@@ -56,7 +56,7 @@ model Avatar {
     userId           String?
     user             User?          @relation(fields: [userId], references: [id])
     avatarCategory   AvatarCategory @relation(fields: [avatarCategoryId], references: [id])
-    avatarCategoryId String         @unique
+    avatarCategoryId String
     createdAt        DateTime       @default(now()) @map("created_at")
 
     @@map("avatars")

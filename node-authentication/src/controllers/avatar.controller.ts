@@ -19,8 +19,8 @@ export const avatarCollectionController = async (
     res.status(201).json({
       data: {
         id,
-        createdAt,
         avatarCategory,
+        createdAt,
       },
       message: 'Avatar successfully collected',
     });
