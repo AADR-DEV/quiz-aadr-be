@@ -45,6 +45,11 @@ export const authUserController = async (
     const { id, name, username, email, mainAvatar, diamonds, avatars } =
       await authUserService(data as string);
 
+    const convertAvatarResponse = avatars.map(avatar => avatar.avatarCategory);
+    const convertDiamondResponse = diamonds.map(
+      diamond => diamond.diamondCategory,
+    );
+
     let total_diamonds: number = 0;
     let total_spent: number = 0;
 
@@ -70,8 +75,8 @@ export const authUserController = async (
       username,
       email,
       mainAvatar,
-      avatars,
-      diamonds,
+      avatars: convertAvatarResponse,
+      diamonds: convertDiamondResponse,
       total_diamonds,
       total_spent,
       message: 'User successfully authenticated',

@@ -39,13 +39,11 @@ export const authUserService = async (payload: string) => {
       mainAvatar: true,
       avatars: {
         select: {
-          id: true,
           avatarCategory: true,
         },
       },
       diamonds: {
         select: {
-          id: true,
           diamondCategory: true,
         },
       },
