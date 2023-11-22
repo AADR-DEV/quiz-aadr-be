@@ -15,7 +15,7 @@ export const avatarCollectionService = async (
   });
 
   if (checkIfExist) {
-    throw new HttpException(400, 'Already collected');
+    throw new HttpException(400, 'Avatar already collected');
   }
 
   const result = await prisma.avatar.create({
