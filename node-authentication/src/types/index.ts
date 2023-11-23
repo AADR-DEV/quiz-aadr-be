@@ -15,4 +15,10 @@ export type DiamondPurcahsePayload = {
 export type AvatarCollectionPayload = {
   userId: string;
   avatarCategoryId: string;
+  price?: number;
+};
+
+export type RedisResponse = {
+  total_diamonds: number;
+  total_spent: number;
 };

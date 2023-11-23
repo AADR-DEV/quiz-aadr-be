@@ -1,11 +1,12 @@
 import type { NextFunction, Request, Response } from 'express';
+import redis, { createRedisKey } from '../lib/redis';
 
 import {
   authSessionService,
   authUserService,
   authUserUpdateService,
 } from '../services';
-import { OAuthPayload } from '../types';
+import { OAuthPayload, RedisResponse } from '../types';
 
 export const authSessionController = async (
   req: Request,
@@ -48,24 +49,9 @@ export const authUserController = async (
       diamond => diamond.diamondCategory,
     );
 
-    let total_diamonds: number = 0;
-    let total_spent: number = 0;
-
-    if (diamonds.length > 0) {
-      const getAmountFromEveryPurchase = diamonds.map(
-        diamond => diamond.diamondCategory.amount,
-      );
-
-      const getPriceFromEveryPurchase = diamonds.map(
-        diamond => diamond.diamondCategory.price,
-      );
-
-      total_diamonds = getAmountFromEveryPurchase.reduce(
-        (acc, curr) => acc + curr,
-      );
-
-      total_spent = getPriceFromEveryPurchase.reduce((acc, curr) => acc + curr);
-    }
+    const USER_REDIS_KEY = createRedisKey(username);
+    const { total_diamonds, total_spent }: RedisResponse =
+      await redis.get(USER_REDIS_KEY);
 
     res.status(200).json({
       id,

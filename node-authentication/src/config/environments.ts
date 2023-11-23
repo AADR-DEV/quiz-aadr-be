@@ -12,4 +12,6 @@ export const {
   GOOGLE_CALLBACK_PROFILE_SCOPE_URL,
   JWT_EXPIRATION_TIME,
   JWT_SECRET,
+  REDIS_URL,
+  REDIS_TOKEN,
 } = process.env;
