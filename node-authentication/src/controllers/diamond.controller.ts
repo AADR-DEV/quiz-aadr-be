@@ -33,12 +33,11 @@ export const diamondPurchaseController = async (
         .map(diamond => diamond.diamondCategory.amount)
         .reduce((acc, curr) => acc + curr);
 
+    total_spent = getAmountOfSpentFromEveryPurchase;
+    total_diamonds += getAmountOfDiamondsFromEveryPurchase;
+
     if (!redisResponse && user.diamonds.length > 0) {
       total_diamonds = getAmountOfDiamondsFromEveryPurchase;
-      total_spent = getAmountOfSpentFromEveryPurchase;
-    } else {
-      total_diamonds += getAmountOfDiamondsFromEveryPurchase;
-      total_spent = getAmountOfSpentFromEveryPurchase;
     }
 
     await redis.set(USER_REDIS_KEY, {
