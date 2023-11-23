@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\QuestionClientController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('question', [QuestionClientController::class, 'index']);
+Route::post('question', [QuestionClientController::class, 'store']);
+Route::delete('question/{id}', [QuestionClientController::class, 'destroy']);
