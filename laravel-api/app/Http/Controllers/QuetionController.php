@@ -33,25 +33,43 @@ class QuetionController extends Controller
             'falseans_2' => 'required|max:255',
             'falseans_3' => 'required|max:255',
         ]);
-        
+    
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $imageUpload = Cloudinary::upload($request->file('image')->getRealPath(), [
                 'folder' => 'project-aadr',
             ])->getSecurePath();
-        } else {
+    
+            $post = Quetion::create([
+                'image' => $imageUpload,
+                'quetion' => $request->quetion,
+                'trueans' => $request->trueans,
+                'falseans_1' => $request->falseans_1,
+                'falseans_2' => $request->falseans_2,
+                'falseans_3' => $request->falseans_3,
+            ]);
+    
             return response()->json([
-                'error' => 'Invalid or missing image file',
-            ], 400);
+                'message' => 'Question created successfully',
+                'data' => new QuetionResource($post),
+            ], 200);
+        } else {
+            $post = Quetion::create([
+                'image' => $request->image,
+                'quetion' => $request->quetion,
+                'trueans' => $request->trueans,
+                'falseans_1' => $request->falseans_1,
+                'falseans_2' => $request->falseans_2,
+                'falseans_3' => $request->falseans_3,
+            ]);
+    
+            return response()->json([
+                'message' => 'Question created successfully',
+                'data' => new QuetionResource($post),
+            ], 200);
+            // return response()->json([
+            //     'error' => 'Invalid or missing image file',
+            // ], 400);
         }
-        $post = Quetion::create([
-            'image' => $imageUpload,
-            'quetion' => $request->quetion,
-            'trueans' => $request->trueans,
-            'falseans_1' => $request->falseans_1,
-            'falseans_2' => $request->falseans_2,
-            'falseans_3' => $request->falseans_3,
-        ]);
-        return new QuetionResource($post);
     }
 
     public function update($id, Request $request) {
