@@ -49,9 +49,18 @@ export const authUserController = async (
       diamond => diamond.diamondCategory,
     );
 
-    const USER_REDIS_KEY = createRedisKey(username);
-    const { total_diamonds, total_spent }: RedisResponse =
-      await redis.get(USER_REDIS_KEY);
+    let total_diamonds: number;
+    let total_spent: number;
+
+    if (convertDiamondResponse.length > 0) {
+      const USER_REDIS_KEY = createRedisKey(username);
+
+      const { total_diamonds: diamonds, total_spent: spent }: RedisResponse =
+        await redis.get(USER_REDIS_KEY);
+
+      total_diamonds = diamonds;
+      total_spent = spent;
+    }
 
     res.status(200).json({
       id,

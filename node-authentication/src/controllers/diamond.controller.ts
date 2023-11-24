@@ -30,7 +30,7 @@ export const diamondPurchaseController = async (
     const getAmountOfSpentFromEveryPurchase =
       user.diamonds &&
       user.diamonds
-        .map(diamond => diamond.diamondCategory.amount)
+        .map(diamond => diamond.diamondCategory.price)
         .reduce((acc, curr) => acc + curr);
 
     total_spent = getAmountOfSpentFromEveryPurchase;
