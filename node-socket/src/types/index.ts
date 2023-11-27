@@ -1,17 +1,18 @@
+import { Socket } from 'socket.io';
+
 export type UserAnswer = {
   questionId: string;
   questionAnswer: string;
 };
 
-export type User = {
+export type Player = {
   id: string;
-  name: string;
+  username: string;
   avatar: string;
-  room: string;
+  points?: number;
   answers?: UserAnswer[];
 };
 
-export type UsersState = {
-  users: User[];
-  setUsers: (newUsersArray: User[]) => void;
+export type Room = {
+  sockets: Set<Socket>;
 };
