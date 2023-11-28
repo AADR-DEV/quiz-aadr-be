@@ -1,8 +1,15 @@
 import express from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
-import { Player } from './types';
-import { addPlayer, launchGame, players, startCountdown } from './lib/socket';
+import { Player, UserAnswer, UserScore } from './types';
+import {
+  addPlayer,
+  // createRoom,
+  players,
+  startCountdown,
+  storeAnswer,
+  throwQuestion,
+} from './lib/socket';
 
 const PORT = process.env.PORT || 5001;
 const MAX_PLAYERS = 3;
@@ -33,29 +40,53 @@ io.on('connection', (socket: Socket) => {
 
   // Handle createPlayer
   socket.on('createPlayer', (newPlayer: Player) => {
+    startCountdown(socket);
+
     if (players.length < MAX_PLAYERS) {
-      addPlayer(socket, newPlayer);
+      addPlayer(socket, io, newPlayer);
 
       socket.broadcast.emit('userList', players);
 
       if (players.length === MAX_PLAYERS) {
+        io.to(players.map(player => player.room)).emit('startGame', true);
         socket.broadcast.emit('userList', players);
 
         socket.emit('message', `${players.length} players have joined`);
-
-        launchGame(socket);
+        socket.broadcast.emit(
+          'message',
+          `${players.length} players have joined`,
+        );
       }
-      startCountdown(socket);
     } else {
       console.info(`${newPlayer.username} rejected`);
       socket.emit('message', `Game room is full, cannot join`);
-      socket.disconnect();
     }
-  }),
-    // Handle disconnect
-    socket.on('disconnect', () => {
-      console.log(`${socket.id} disconnected`);
-    });
+  });
+
+  // Handle question
+  socket.on('question', socket => {
+    throwQuestion(socket);
+  });
+
+  // Handle answer
+  socket.on('answer', (userAnswer: UserAnswer) => {
+    storeAnswer(socket, userAnswer, io);
+  });
+
+  // Handle score
+  socket.on('score', (userScore: UserScore) => {
+    const playerScore: UserScore[] = [];
+    playerScore.push(userScore);
+
+    console.log(playerScore.length);
+
+    socket.emit('score', playerScore);
+  });
+
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log(`${socket.id} disconnected`);
+  });
 });
 
 server.listen(PORT, () => {
