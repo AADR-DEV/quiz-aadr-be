@@ -7,12 +7,12 @@ export let COUNTDOWN = 10;
 
 // Player data
 export let players: Player[] = [];
-export const playerScore: UserScore[] = [];
+export let playerScore: UserScore[] = [];
 
 // Room
 export const currentPlayerRoom = players.map(player => player.room);
 
-export const startCountdown = (socket: Socket, io: Server) => {
+export const startCountdown = (socket: Socket) => {
   socket.emit('countdown', COUNTDOWN);
 
   const countdownInterval = setInterval(() => {
@@ -30,7 +30,6 @@ export const startCountdown = (socket: Socket, io: Server) => {
       players = [];
 
       socket.emit('message', 'aborted');
-      io.sockets.adapter.rooms.clear();
     }
   }, 1000);
 };
@@ -101,5 +100,12 @@ export const storeScore = (socket: Socket, io: Server, result: UserScore) => {
 
   const sortedResult = playerScore.sort((a, b) => b.points - a.points);
 
-  io.to(currentPlayerRoom).emit('score', sortedResult);
+  console.log(sortedResult);
+  // io.to(currentPlayerRoom).emit('score', sortedResult);
+  socket.broadcast.emit('score', sortedResult);
+};
+
+export const clearState = (io: Server) => {
+  io.sockets.adapter.rooms.clear();
+  playerScore = [];
 };

@@ -4,6 +4,7 @@ import http from 'http';
 import { Player, UserAnswer, UserScore } from './types';
 import {
   addPlayer,
+  clearState,
   currentPlayerRoom,
   players,
   startCountdown,
@@ -40,9 +41,11 @@ io.on('connection', (socket: Socket) => {
 
   // Handle createPlayer
   socket.on('createPlayer', (newPlayer: Player) => {
+    clearState(io);
+
     const playerIndex = players.findIndex(player => player.id === socket.id);
 
-    startCountdown(socket, io);
+    startCountdown(socket);
 
     if (players.length < MAX_PLAYERS) {
       addPlayer(socket, io, newPlayer);
@@ -64,7 +67,6 @@ io.on('connection', (socket: Socket) => {
       console.info(`${newPlayer.username} rejected`);
 
       players.splice(playerIndex, 1);
-      io.sockets.adapter.rooms.clear();
     }
   });
 
@@ -88,7 +90,6 @@ io.on('connection', (socket: Socket) => {
     }
 
     socket.leave(playerExist.room);
-    socket._cleanup();
     players.splice(playerIndex, 1);
   });
 
