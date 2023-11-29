@@ -7,7 +7,7 @@ export let COUNTDOWN = 10;
 
 // Player data
 export let players: Player[] = [];
-export let playerScore: UserScore[] = [];
+export const playerScore: UserScore[] = [];
 
 // Room
 export const currentPlayerRoom = players.map(player => player.room);
@@ -51,9 +51,6 @@ export const addPlayer = (socket: Socket, io: Server, newPlayer: Player) => {
 
 export const createRoom = (socket: Socket, io: Server) => {
   const availableRoom = io.sockets.adapter.rooms;
-
-  // Clear room
-  // io.sockets.adapter.rooms.clear();
 
   let roomCount = 0;
   let roomName: string | null = `room-${roomCount}`;
@@ -103,7 +100,6 @@ export const storeScore = (socket: Socket, io: Server, result: UserScore) => {
   playerScore.push(playerResult);
 
   const sortedResult = playerScore.sort((a, b) => b.points - a.points);
-  io.to(currentPlayerRoom).emit('score', sortedResult);
 
-  playerScore = [];
+  io.to(currentPlayerRoom).emit('score', sortedResult);
 };

@@ -88,6 +88,7 @@ io.on('connection', (socket: Socket) => {
     }
 
     socket.leave(playerExist.room);
+    socket._cleanup();
     players.splice(playerIndex, 1);
   });
 
