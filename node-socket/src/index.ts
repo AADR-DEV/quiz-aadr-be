@@ -4,11 +4,11 @@ import http from 'http';
 import { Player, UserAnswer, UserScore } from './types';
 import {
   addPlayer,
-  // createRoom,
+  currentPlayerRoom,
   players,
   startCountdown,
   storeAnswer,
-  throwQuestion,
+  storeScore,
 } from './lib/socket';
 
 const PORT = process.env.PORT || 5001;
@@ -40,32 +40,32 @@ io.on('connection', (socket: Socket) => {
 
   // Handle createPlayer
   socket.on('createPlayer', (newPlayer: Player) => {
-    startCountdown(socket);
+    const playerIndex = players.findIndex(player => player.id === socket.id);
+
+    startCountdown(socket, io);
 
     if (players.length < MAX_PLAYERS) {
       addPlayer(socket, io, newPlayer);
 
+      console.log(`From top players length: ${players.length}`);
+
       socket.broadcast.emit('userList', players);
 
       if (players.length === MAX_PLAYERS) {
-        io.to(players.map(player => player.room)).emit('startGame', true);
-        socket.broadcast.emit('userList', players);
+        io.to(currentPlayerRoom).emit('startGame', true);
+        io.to(currentPlayerRoom).emit('userList', players);
 
-        socket.emit('message', `${players.length} players have joined`);
-        socket.broadcast.emit(
+        io.to(currentPlayerRoom).emit(
           'message',
           `${players.length} players have joined`,
         );
       }
     } else {
       console.info(`${newPlayer.username} rejected`);
-      socket.emit('message', `Game room is full, cannot join`);
-    }
-  });
 
-  // Handle question
-  socket.on('question', socket => {
-    throwQuestion(socket);
+      players.splice(playerIndex, 1);
+      io.sockets.adapter.rooms.clear();
+    }
   });
 
   // Handle answer
@@ -75,12 +75,20 @@ io.on('connection', (socket: Socket) => {
 
   // Handle score
   socket.on('score', (userScore: UserScore) => {
-    const playerScore: UserScore[] = [];
-    playerScore.push(userScore);
+    storeScore(socket, io, userScore);
+  });
 
-    console.log(playerScore.length);
+  //  Handle end game
+  socket.on('endGame', (status: boolean) => {
+    const playerIndex = players.findIndex(player => player.id === socket.id);
+    const playerExist = players.find(player => player.id === socket.id);
 
-    socket.emit('score', playerScore);
+    if (!status) {
+      return;
+    }
+
+    socket.leave(playerExist.room);
+    players.splice(playerIndex, 1);
   });
 
   // Handle disconnect

@@ -9,8 +9,8 @@ export type UserAnswer = {
 export type UserScore = {
   id: string;
   username: string;
-  points: number;
   avatar: string;
+  points: number;
 };
 
 export type Player = {

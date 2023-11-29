@@ -1,13 +1,18 @@
 import type { Socket } from 'socket.io';
-import type { Player, UserAnswer } from '../types';
+import type { Player, UserAnswer, UserScore } from '../types';
 import type { Server } from 'socket.io';
 
 // CD
-export let COUNTDOWN = 30;
+export let COUNTDOWN = 10;
 
+// Player data
 export let players: Player[] = [];
+export let playerScore: UserScore[] = [];
 
-export const startCountdown = (socket: Socket) => {
+// Room
+export const currentPlayerRoom = players.map(player => player.room);
+
+export const startCountdown = (socket: Socket, io: Server) => {
   socket.emit('countdown', COUNTDOWN);
 
   const countdownInterval = setInterval(() => {
@@ -17,24 +22,28 @@ export const startCountdown = (socket: Socket) => {
 
     if (COUNTDOWN <= 0 || players.length === 3) {
       clearInterval(countdownInterval);
+      COUNTDOWN = 10;
     }
 
-    if (COUNTDOWN <= 0 && players.length !== 3) {
+    if (COUNTDOWN <= 0 && players.length < 3) {
       clearInterval(countdownInterval);
       players = [];
 
-      socket.emit('message', 'Game is aborted');
+      socket.emit('message', 'aborted');
+      io.sockets.adapter.rooms.clear();
     }
   }, 1000);
 };
 
 export const addPlayer = (socket: Socket, io: Server, newPlayer: Player) => {
+  const { username, avatar, answers } = newPlayer;
+
   const player: Player = {
     id: socket.id,
-    username: newPlayer.username,
+    username,
     room: createRoom(socket, io),
-    avatar: newPlayer.avatar,
-    answers: newPlayer.answers,
+    avatar,
+    answers,
   };
 
   players.push(player);
@@ -43,26 +52,23 @@ export const addPlayer = (socket: Socket, io: Server, newPlayer: Player) => {
 export const createRoom = (socket: Socket, io: Server) => {
   const availableRoom = io.sockets.adapter.rooms;
 
+  // Clear room
+  // io.sockets.adapter.rooms.clear();
+
   let roomCount = 0;
   let roomName: string | null = `room-${roomCount}`;
 
-  if (!availableRoom.has(roomName)) {
+  if (availableRoom.has(roomName)) {
     roomCount++;
     roomName = `room-${roomCount}`;
-
-    socket.join(roomName);
-
-    return roomName;
   }
-};
 
-export const throwQuestion = (socket: Socket) => {
-  socket.emit('question', 'What do you want to do?');
+  socket.join(roomName);
+
+  return roomName;
 };
 
 export const storeAnswer = (socket: Socket, answer: UserAnswer, io: Server) => {
-  let questionCount = 0;
-
   const { userId, questionId, questionAnswer } = answer;
 
   const player = players.find(player => player.id === socket.id);
@@ -74,7 +80,6 @@ export const storeAnswer = (socket: Socket, answer: UserAnswer, io: Server) => {
   };
 
   player.answers.push(playerAnswer);
-  questionCount++;
 
   const filteredNullAnswer = player.answers.filter(
     answer => answer.questionAnswer !== '',
@@ -82,12 +87,23 @@ export const storeAnswer = (socket: Socket, answer: UserAnswer, io: Server) => {
 
   player.answers = filteredNullAnswer;
 
-  io.to(players.map(player => player.room)).emit('answer', players);
-
-  if (questionCount === 5) {
-    // socket._cleanup();
-    socket.leave(player.room);
-  }
+  io.to(currentPlayerRoom).emit('answer', players);
 };
 
-export const storeScore = () => {};
+export const storeScore = (socket: Socket, io: Server, result: UserScore) => {
+  const { id, username, avatar, points } = result;
+
+  const playerResult: UserScore = {
+    id,
+    username,
+    avatar,
+    points,
+  };
+
+  playerScore.push(playerResult);
+
+  const sortedResult = playerScore.sort((a, b) => b.points - a.points);
+  io.to(currentPlayerRoom).emit('score', sortedResult);
+
+  playerScore = [];
+};
