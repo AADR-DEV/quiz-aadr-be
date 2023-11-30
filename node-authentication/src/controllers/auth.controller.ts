@@ -2,8 +2,8 @@ import type { NextFunction, Request, Response } from 'express';
 import redis, { createRedisKey } from '../lib/redis';
 
 import {
-  authAllUserService,
   authSessionService,
+  authUserLeaderboardService,
   authUserService,
   authUserUpdateService,
 } from '../services';
@@ -38,13 +38,13 @@ export const authSessionController = async (
   }
 };
 
-export const authAllUserController = async (
+export const authUserLeaderboardController = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const users = await authAllUserService();
+    const users = await authUserLeaderboardService();
     const convertUsersResponse: UserConvertingResponse[] = [];
 
     const total_diamonds: number = 0;
@@ -55,10 +55,7 @@ export const authAllUserController = async (
         id: user.id,
         name: user.name,
         username: user.username,
-        email: user.email,
         mainAvatar: user.mainAvatar,
-        avatars: user.avatars.map(avatar => avatar.avatarCategory),
-        diamonds: user.diamonds.map(diamond => diamond.diamondCategory),
         total_diamonds,
         total_spent,
       });
@@ -75,8 +72,12 @@ export const authAllUserController = async (
         redisResponse === null ? 0 : redisResponse.total_spent;
     }
 
+    const filteredAndSortedOutUsersResponse = convertUsersResponse
+      .filter(user => user.total_diamonds && user.total_spent !== 0)
+      .sort((a, b) => b.total_diamonds - a.total_diamonds);
+
     res.status(200).json({
-      data: convertUsersResponse,
+      data: filteredAndSortedOutUsersResponse,
       message: 'User successfully authenticated',
     });
   } catch (error) {

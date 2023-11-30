@@ -42,10 +42,7 @@ export type UserConvertingResponse = {
   id: string;
   name: string;
   username: string;
-  email?: string;
   mainAvatar?: string;
-  avatars?: AvatarCategoryPayload[];
-  diamonds: DiamondCategoryPayload[];
   total_diamonds?: number;
   total_spent?: number;
 };

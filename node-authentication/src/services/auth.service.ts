@@ -26,35 +26,13 @@ export const authSessionService = async (payload: OAuthPayload) => {
   return result;
 };
 
-export const authAllUserService = async () => {
+export const authUserLeaderboardService = async () => {
   const result = await prisma.user.findMany({
-    where: {
-      diamonds: {
-        some: {
-          diamondCategory: {
-            amount: {
-              gt: 0,
-            },
-          },
-        },
-      },
-    },
     select: {
       id: true,
       name: true,
       username: true,
-      email: true,
       mainAvatar: true,
-      avatars: {
-        select: {
-          avatarCategory: true,
-        },
-      },
-      diamonds: {
-        select: {
-          diamondCategory: true,
-        },
-      },
     },
   });
 
