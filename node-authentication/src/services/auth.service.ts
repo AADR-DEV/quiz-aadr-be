@@ -26,6 +26,41 @@ export const authSessionService = async (payload: OAuthPayload) => {
   return result;
 };
 
+export const authAllUserService = async () => {
+  const result = await prisma.user.findMany({
+    where: {
+      diamonds: {
+        some: {
+          diamondCategory: {
+            amount: {
+              gt: 0,
+            },
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      mainAvatar: true,
+      avatars: {
+        select: {
+          avatarCategory: true,
+        },
+      },
+      diamonds: {
+        select: {
+          diamondCategory: true,
+        },
+      },
+    },
+  });
+
+  return result;
+};
+
 export const authUserService = async (payload: string) => {
   const result = await prisma.user.findUnique({
     where: {

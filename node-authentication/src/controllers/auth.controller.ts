@@ -2,11 +2,16 @@ import type { NextFunction, Request, Response } from 'express';
 import redis, { createRedisKey } from '../lib/redis';
 
 import {
+  authAllUserService,
   authSessionService,
   authUserService,
   authUserUpdateService,
 } from '../services';
-import { OAuthPayload, RedisResponse } from '../types';
+import type {
+  OAuthPayload,
+  RedisResponse,
+  UserConvertingResponse,
+} from '../types';
 
 export const authSessionController = async (
   req: Request,
@@ -27,6 +32,52 @@ export const authSessionController = async (
       email,
       mainAvatar,
       message: 'Create user data successful',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const authAllUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const users = await authAllUserService();
+    const convertUsersResponse: UserConvertingResponse[] = [];
+
+    const total_diamonds: number = 0;
+    const total_spent: number = 0;
+
+    users.forEach(user => {
+      convertUsersResponse.push({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        mainAvatar: user.mainAvatar,
+        avatars: user.avatars.map(avatar => avatar.avatarCategory),
+        diamonds: user.diamonds.map(diamond => diamond.diamondCategory),
+        total_diamonds,
+        total_spent,
+      });
+    });
+
+    for (const user of convertUsersResponse) {
+      const USER_REDIS_KEY = createRedisKey(user.username);
+      const redisResponse: RedisResponse = await redis.get(USER_REDIS_KEY);
+
+      user.total_diamonds +=
+        redisResponse === null ? 0 : redisResponse.total_diamonds;
+
+      user.total_spent +=
+        redisResponse === null ? 0 : redisResponse.total_spent;
+    }
+
+    res.status(200).json({
+      data: convertUsersResponse,
+      message: 'User successfully authenticated',
     });
   } catch (error) {
     next(error);
