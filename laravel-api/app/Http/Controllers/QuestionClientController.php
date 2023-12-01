@@ -95,7 +95,7 @@ class QuestionClientController extends Controller
         $contentArray = json_decode($content, true);
         $data = $contentArray['data'];
         print_r($data);
-        return redirect()->to('question')->with('success', 'Question deleted successfully');
+        return redirect()->to('question')->with('success', 'Question post successfully');
     }
 
     private function prepareMultipartData($data)
