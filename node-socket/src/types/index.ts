@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 
 export type UserAnswer = {
-  userId?: string;
+  // userId?: string;
   questionId: string;
   questionAnswer: string;
 };

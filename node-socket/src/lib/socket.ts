@@ -65,12 +65,12 @@ export const createRoom = (socket: Socket, io: Server) => {
 };
 
 export const storeAnswer = (socket: Socket, answer: UserAnswer, io: Server) => {
-  const { userId, questionId, questionAnswer } = answer;
+  const { questionId, questionAnswer } = answer;
 
   const player = players.find(player => player.id === socket.id);
 
   const playerAnswer: UserAnswer = {
-    userId,
+    // userId,
     questionId,
     questionAnswer,
   };
