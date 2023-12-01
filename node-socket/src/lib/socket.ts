@@ -3,7 +3,7 @@ import type { Player, UserAnswer, UserScore } from '../types';
 import type { Server } from 'socket.io';
 
 // CD
-export let COUNTDOWN = 10;
+export let COUNTDOWN = 30;
 
 // Player data
 export let players: Player[] = [];
@@ -22,7 +22,7 @@ export const startCountdown = (socket: Socket) => {
 
     if (COUNTDOWN <= 0 || players.length === 3) {
       clearInterval(countdownInterval);
-      COUNTDOWN = 10;
+      COUNTDOWN = 30;
     }
 
     if (COUNTDOWN <= 0 && players.length < 3) {
@@ -101,7 +101,6 @@ export const storeScore = (socket: Socket, io: Server, result: UserScore) => {
   const sortedResult = playerScore.sort((a, b) => b.points - a.points);
 
   console.log(sortedResult);
-  // io.to(currentPlayerRoom).emit('score', sortedResult);
   socket.broadcast.emit('score', sortedResult);
 };
 
