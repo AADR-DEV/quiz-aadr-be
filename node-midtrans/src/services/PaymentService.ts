@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Payment } from "../entities/Payment";
-import { uuid } from "uuidv4";
 const midtransClient = require("midtrans-client");
 import "dotenv/config";
 
@@ -14,13 +13,13 @@ export default new (class PaymentServices {
 		try {
 			const snap = new midtransClient.Snap({
 				isProduction: false,
-				serverKey: "SB-Mid-server-_AwolkqSec6NFWOl0VXsVIOg",
-				clientKey: "SB-Mid-client-aPM6HKjy9Yc4IQlM",
+				serverKey: process.env.SERVER_KEY,
+				clientKey: process.env.CLIENT_KEY,
 			});
 
 			const parameter = {
 				transaction_details: {
-					order_id: uuid(),
+					order_id: req.body.order_id,
 					gross_amount: req.body.gross_amount,
 				},
 				customer_details: {
@@ -40,15 +39,16 @@ export default new (class PaymentServices {
 			await snap
 				.createTransaction(parameter)
 				.then((transaction: any | null) => {
-					const dataPayment = {
-						response: JSON.stringify(transaction),
-					};
+					// const dataPayment = {
+					// 	response: JSON.stringify(transaction),
+					// };
+					const redirectURL = transaction.redirect_url;
 
 					const token = transaction.token;
 
 					return res.status(200).json({
 						message: "success",
-						dataPayment,
+						redirectURL,
 						token,
 					});
 				});
@@ -59,9 +59,11 @@ export default new (class PaymentServices {
 		}
 	}
 
-	async callback(req: Request, res: Response): Promise<Response> {
+	async callback(req: Request, res: Response) {
 		try {
 			const data = req.body;
+			// console.log(data);
+
 			if (data.transaction_status == "settlement") {
 				await this.PaymentRepository.update(
 					{
@@ -72,10 +74,7 @@ export default new (class PaymentServices {
 					}
 				);
 			}
-			return res.status(200).json({
-				message: "success",
-				data: data,
-			});
+			return res.status(200).json(data);
 		} catch (error) {
 			return res.status(500).json({
 				message: `Internal Server Error`,
